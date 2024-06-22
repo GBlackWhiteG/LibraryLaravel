@@ -17,21 +17,21 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
-});
 
-
-Route::group(['namespace' => 'App\Http\Controllers\Book', 'prefix' => 'books'], function() {
-    Route::get('/', IndexController::class);
-    Route::get('/{book}', ShowController::class);
-
-    Route::post('/store', StoreController::class);
-    Route::patch('/{book}', UpdateController::class);
-    Route::delete('/{book}', DestroyController::class);
+    Route::group(['middleware' => 'jwt.auth'], function() {
+        Route::group(['namespace' => 'App\Http\Controllers\Book', 'prefix' => 'books'], function() {
+            Route::get('/', 'IndexController');
+            Route::get('/{book}', 'ShowController');
+        
+            Route::post('/store', 'StoreController');
+            Route::patch('/{book}', 'UpdateController');
+            Route::delete('/{book}', 'DestroyController');
+        });
+    });
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\User'], function() {
-    Route::get('/users', IndexController::class);
+    Route::get('/users', 'IndexController');
 
-    Route::post('/users', StoreController::class);
-    
+    Route::post('/users', 'StoreController');
 });

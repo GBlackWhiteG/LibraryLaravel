@@ -5,21 +5,17 @@ import router from "../../router";
 const error = ref("");
 
 const data = reactive({
-  name: "",
   email: "",
   password: "",
-  password_confirmation: "",
 });
 
-const store = () => {
+const login = () => {
   axios
-    .post("/api/users", data)
+    .post("/api/auth/login", data)
     .then((res) => {
-      localStorage.setItem('access_token', res.data.access_token);
+      localStorage.access_token = res.data.access_token;
       router.push({ path: "/books" });
-    })
-    .catch((err) => {
-      console.log(err);
+    }).catch((err) => {
       error.value = err.response.data.error;
     });
 };
@@ -27,15 +23,9 @@ const store = () => {
 
 <template>
   <form>
-    <input type="text" v-model="data.name" placeholder="Имя" />
     <input type="email" v-model="data.email" placeholder="Эл. почта" />
     <input type="password" v-model="data.password" placeholder="Пароль" />
-    <input
-      type="password"
-      v-model="data.password_confirmation"
-      placeholder="Подтверждение пароля"
-    />
-    <input type="submit" @click.prevent="store" />
+    <input type="submit" @click.prevent="login" />
     <p v-if="error">{{ error }}</p>
   </form>
 </template>

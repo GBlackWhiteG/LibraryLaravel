@@ -17,11 +17,15 @@ class StoreController extends Controller
             'password' => 'required|string|required_with:password_confirmation|same:password_confirmation',
             'password_confirmation' => 'required|string'
         ]);
-
         $data['password'] = Hash::make($data['password']);
-        User::firstOrCreate([
-            'email' => $data['email']
-        ], $data);
-        return response()->json(['message' => 'User created successfully'], 200);
+
+        $user = User::where('email', $data['email'])->first();
+        if ($user) {
+            return response(['error' => 'User with this email already exists'], 401);
+        }
+
+        $user = User::create($data);
+        $token = auth()->tokenById($user->id);
+        return response(['access_token' => $token]);
     }
 }
