@@ -11,20 +11,29 @@ const data = reactive({
   author: "",
   publisher: "",
   category: "",
-  image_url: "",
+  image_url: null,
 });
 
+const handleFileChange = (e) => {
+  data.image_url = e.target.files[0];
+};
+
 const handleSubmit = () => {
-  api.patch(`/api/auth/books/${route.params.id}`, {
-      title: data.title,
-      author: data.author,
-      publisher: data.publisher,
-      category: data.category,
-      image_url: data.image_url,
-    })
+  const formData = new FormData();
+  formData.append("title", data.title);
+  formData.append("author", data.author);
+  formData.append("publisher", data.publisher);
+  formData.append("category", data.category);
+  formData.append("image_url", data.image_url);
+
+  api
+    .post(`/api/auth/books/${route.params.id}`, formData)
     .then((res) => {
       alert("Данные о книге обновлены");
       router.push({ path: "/books" });
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 </script>
@@ -36,16 +45,21 @@ const handleSubmit = () => {
     @submit.prevent="handleSubmit"
     class="d-sm-flex flex-column align-items-start gap-2"
   >
-    <input type="text" placeholder="Название" v-model="data.title" />
-    <input type="text" placeholder="Автор" v-model="data.author" />
-    <input type="text" placeholder="Издательство" v-model="data.publisher" />
+    <input type="text" placeholder="Название" v-model="data.title" required/>
+    <input type="text" placeholder="Автор" v-model="data.author" required/>
+    <input type="text" placeholder="Издательство" v-model="data.publisher" required/>
 
     <select name="" id="" v-model="data.category">
       <option value="category_1">Категория 1</option>
       <option value="category_2">Категория 2</option>
     </select>
 
-    <input type="input" placeholder="Изображение" v-model="data.image_url" />
+    <input
+      type="file"
+      placeholder="Изображение"
+      @change="handleFileChange"
+      required
+    />
 
     <input type="submit" value="Сохранить" />
   </form>

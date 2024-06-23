@@ -21,7 +21,11 @@ const routes = [
         component: () => import("./components/Book/EditComponent.vue"),
         name: "book.edit",
     },
-
+    {
+        path: "/books/reservated",
+        component: () => import("./components/Book/ReservatedBooksComponent.vue"),
+        name: "book.reservated",
+    },
     {
         path: "/users",
         component: () => import("./components/User/IndexComponent.vue"),

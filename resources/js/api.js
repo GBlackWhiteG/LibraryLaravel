@@ -28,10 +28,13 @@ api.interceptors.response.use(
                 }
             }).then( res => {
                 localStorage.setItem('access_token', res.data.access_token);
+                localStorage.setItem('role', res.data.role);
 
                 error.config.headers.authorization = `Bearer ${res.data.access_token}`;
 
                 return api.request(error.config);
+            }).catch((err) => {
+                console.log(err);
             });
         }
         if (error.response.status == 401) router.push({ path: "/login" });

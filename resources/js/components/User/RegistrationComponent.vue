@@ -15,7 +15,8 @@ const store = () => {
   axios
     .post("/api/users", data)
     .then((res) => {
-      localStorage.setItem('access_token', res.data.access_token);
+      localStorage.access_token = res.data.access_token;
+      localStorage.role = res.role;
       router.push({ path: "/books" });
     })
     .catch((err) => {
@@ -27,13 +28,14 @@ const store = () => {
 
 <template>
   <form>
-    <input type="text" v-model="data.name" placeholder="Имя" />
-    <input type="email" v-model="data.email" placeholder="Эл. почта" />
-    <input type="password" v-model="data.password" placeholder="Пароль" />
+    <input type="text" v-model="data.name" placeholder="Имя" required/>
+    <input type="email" v-model="data.email" placeholder="Эл. почта" required/>
+    <input type="password" v-model="data.password" placeholder="Пароль" required/>
     <input
       type="password"
       v-model="data.password_confirmation"
       placeholder="Подтверждение пароля"
+      required
     />
     <input type="submit" @click.prevent="store" />
     <p v-if="error">{{ error }}</p>

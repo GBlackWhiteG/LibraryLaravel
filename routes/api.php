@@ -19,19 +19,37 @@ Route::group([
     Route::post('me', [AuthController::class, 'me']);
 
     Route::group(['middleware' => 'jwt.auth'], function() {
-        Route::group(['namespace' => 'App\Http\Controllers\Book', 'prefix' => 'books'], function() {
+        Route::group(['namespace' => 'App\Http\Controllers\User', 'prefix' => 'users'], function() {
+            Route::get('/id', 'UserIdController');
+        });
+
+        Route::group(['namespace' => 'App\Http\Controllers\User', 'prefix' => 'users', 'middleware' => 'admin'], function() {
             Route::get('/', 'IndexController');
-            Route::get('/{book}', 'ShowController');
-        
+            Route::patch('/{user}', 'UpdateController');
+            Route::delete('/{user}', 'DestroyController');
+        });
+
+        Route::group(['namespace' => 'App\Http\Controllers\Book', 'prefix' => 'books'], function() {
+        Route::get('/', 'IndexController');
+        Route::get('/{book}', 'ShowController');
+    });
+
+        Route::group(['namespace' => 'App\Http\Controllers\Book', 'prefix' => 'books', 'middleware' => 'user'], function() {
+            Route::patch('/{book}/reservation', 'ReservationController');
+            Route::patch('/{book}/unreservation', 'UnReservationController');
+        });
+
+        Route::group(['namespace' => 'App\Http\Controllers\Book', 'prefix' => 'books', 'middleware' => 'librarian'], function() {
+            Route::get('/reservated/{book}', 'ReservatedBooksController');
             Route::post('/store', 'StoreController');
-            Route::patch('/{book}', 'UpdateController');
+            Route::post('/{book}', 'UpdateController');
             Route::delete('/{book}', 'DestroyController');
+            Route::patch('/{book}/lend', 'LendController');
+            Route::patch('/{book}/pick', 'PickController');
         });
     });
-});
-
-Route::group(['namespace' => 'App\Http\Controllers\User'], function() {
-    Route::get('/users', 'IndexController');
-
-    Route::post('/users', 'StoreController');
+    
+    Route::group(['namespace' => 'App\Http\Controllers\User'], function() {
+        Route::post('/users', 'StoreController');
+    });
 });

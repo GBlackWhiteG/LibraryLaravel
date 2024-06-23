@@ -8,10 +8,10 @@ use App\Models\Book;
 
 class ShowController extends Controller
 {
-    public function __invoke($id)
-    {
-        //return $book;
-        
-        return Book::findOrFail($id);
+    public function __invoke(Book $book)
+    {   
+        $book->image_url = asset('storage/' . $book->image_url);
+
+        return $book;
     }
 }
