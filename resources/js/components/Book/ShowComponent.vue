@@ -22,6 +22,8 @@ const data = reactive({
   image_url: "",
   user_id: 0,
   issued_user: false,
+  start_reservation: "",
+  end_reservation: "",
 });
 
 const startDate = ref(minDate);
@@ -38,12 +40,6 @@ const isIssued = computed(
   () => userId.value === data.user_id && data.issued_user
 );
 
-/*
-const imageUrl = computed(
-  () => `storage/app/public/${data.image_url}`
-);
-*/
-
 onMounted(() => {
   getBook();
   getUserId();
@@ -56,8 +52,11 @@ const getBook = () => {
     data.author = res.data.author;
     data.publisher = res.data.publisher;
     data.category = res.data.category;
+    data.description = res.data.description;
     data.image_url = res.data.image_url;
     data.issued_user = res.data.issued_user;
+    data.start_reservation = res.data.start_reservation;
+    data.end_reservation = res.data.end_reservation;
 
     data.user_id = res.data.user_id !== null ? res.data.user_id : 0;
   });
@@ -109,36 +108,135 @@ const deleteBook = () => {
 </script>
 
 <template>
-  <h2>{{ data.title }}</h2>
-  <p>{{ data.author }}</p>
-  <p>{{ data.publisher }}</p>
-  <p>{{ data.category }}</p>
-  <img :src='data.image_url' alt="image">
-  <div v-if="role === 'user'">
-    <div v-if="data.user_id === 0" class="d-flex flex-column align-items-start">
-      <label for="start">Начало брони:</label>
-      <input id="start" type="date" :min="minDate" :max="maxDate" :value="startDate" />
-      <label for="end">Конец брони:</label>
-      <input id="end" type="date" :min="minDate" :max="maxDate" :value="endDate" />
-      <button @click="reservateBook">Забронировать</button>
-    </div>
-    <div v-else-if="isReserved">
-      <p>Заберите книгу в библиотеке</p>
-      <button @click="unReservateBook">Отменить бронь</button>
-    </div>
-    <p v-if="isIssued">Книга у вас</p>
-  </div>
+  <section class="mt-2">
+    <div class="book-items">
+      <div class="book-image__wrapper">
+        <img :src="data.image_url" alt="image" class="book-image" />
+      </div>
+      <div class="book-info">
+        <h2>{{ data.title }}</h2>
+        <p>Автор: {{ data.author }}</p>
+        <p>Издатель{{ data.publisher }}</p>
+        <p>Жанр: {{ data.category }}</p>
+        <span>Краткое описание:</span>
+        <p>{{ data.description }}</p>
 
-  <router-link
-    v-if="role === 'librarian'"
-    x
-    :to="{ name: 'book.edit', params: { id: route.params.id } }"
-    >Изменить</router-link
-  >
-  <a href="" v-if="role === 'librarian'" @click.prevent="deleteBook()"
-    >Удалить книгу</a
-  >
+        <div class="buttons">
+          <router-link
+            v-if="role === 'librarian'"
+            x
+            :to="{ name: 'book.edit', params: { id: route.params.id } }"
+            >Изменить</router-link
+          >
+          <a href="" v-if="role === 'librarian'" @click.prevent="deleteBook()"
+            >Удалить книгу</a
+          >
+        </div>
+        <div v-if="role === 'user'">
+          <div v-if="data.user_id === 0">
+            <div class="d-flex flex-row gap-3">
+              <div class="d-flex flex-column">
+                <label for="start">Начало брони:</label>
+                <input
+                  id="start"
+                  type="date"
+                  :min="minDate"
+                  :max="maxDate"
+                  :value="startDate"
+                />
+              </div>
+              <div class="d-flex flex-column">
+                <label for="end">Конец брони:</label>
+                <input
+                  id="end"
+                  type="date"
+                  :min="minDate"
+                  :max="maxDate"
+                  :value="endDate"
+                />
+              </div>
+            </div>
+            <button @click="reservateBook" class="mt-3 button">
+              Забронировать
+            </button>
+          </div>
+          <div
+            v-else-if="isReserved"
+            class="d-flex flex-column align-items-start gap-2"
+          >
+            <span
+              >Книга забронирована с
+              {{
+                data.start_reservation
+                  .split(" ")[0]
+                  .replace("-", ".")
+                  .replace("-", ".")
+              }}
+              до
+              {{
+                data.end_reservation
+                  .split(" ")[0]
+                  .replace("-", ".")
+                  .replace("-", ".")
+              }}</span
+            >
+            <span class="warning">Заберите книгу в библиотеке</span>
+            <button @click="unReservateBook" class="button">
+              Отменить бронь
+            </button>
+          </div>
+          <div v-if="isIssued" class="d-flex flex-column align-items-start">
+            <span class="warning">Книга у вас</span>
+            <span
+              >Крайник срок брони:
+              {{
+                data.end_reservation
+                  .split(" ")[0]
+                  .replace("-", ".")
+                  .replace("-", ".")
+              }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style scoped>
+.book-items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2em;
+}
+
+.book-image {
+  width: 100%;
+  max-width: 500px;
+}
+
+.book-info {
+  grid-column: 2 / 4;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.buttons a,
+.button {
+  color: #000000;
+  text-decoration: none;
+  border: solid 1px #000000;
+  background-color: transparent;
+  padding: 3px 15px;
+}
+
+.warning {
+  color: red;
+  padding: 5px 15px;
+  border: solid 2px red;
+}
 </style>

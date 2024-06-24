@@ -8,6 +8,7 @@ const data = reactive({
   author: "",
   publisher: "",
   category: "",
+  description: "",
   image_url: null,
 });
 
@@ -21,6 +22,7 @@ const handleSubmit = () => {
   formData.append("author", data.author);
   formData.append("publisher", data.publisher);
   formData.append("category", data.category);
+  formData.append("description", data.description);
   formData.append("image_url", data.image_url);
 
   api
@@ -36,7 +38,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <section>
+  <section class="d-flex flex-column align-items-center">
     <h2>Добавить новую книгу</h2>
 
     <form
@@ -52,10 +54,9 @@ const handleSubmit = () => {
         required
       />
 
-      <select name="" id="" v-model="data.category">
-        <option value="category_1">Категория 1</option>
-        <option value="category_2">Категория 2</option>
-      </select>
+      <input type="text" v-model="data.category" placeholder="Жанр">
+
+      <textarea name="" id="" v-model="data.description" cols="30" rows="10"></textarea>
 
       <input
         type="file"
@@ -70,4 +71,7 @@ const handleSubmit = () => {
 </template>
 
 <style scoped>
+input, textarea {
+  width: 100%;
+}
 </style>

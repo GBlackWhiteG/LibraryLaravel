@@ -48,8 +48,8 @@ Route::group([
             Route::patch('/{book}/pick', 'PickController');
         });
     });
-    
-    Route::group(['namespace' => 'App\Http\Controllers\User'], function() {
-        Route::post('/users', 'StoreController');
-    });
+});
+
+Route::group(['namespace' => 'App\Http\Controllers\User'], function() {
+    Route::post('/users', 'StoreController');
 });

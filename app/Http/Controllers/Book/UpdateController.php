@@ -16,6 +16,7 @@ class UpdateController extends Controller
             'author' => 'required|string',
             'publisher' => 'required|string',
             'category' => 'required|string',
+            'description' => 'required|string',
             'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg'
         ]);
 

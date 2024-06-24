@@ -11,6 +11,7 @@ const data = reactive({
   author: "",
   publisher: "",
   category: "",
+  description: "",
   image_url: null,
 });
 
@@ -24,6 +25,7 @@ const handleSubmit = () => {
   formData.append("author", data.author);
   formData.append("publisher", data.publisher);
   formData.append("category", data.category);
+  formData.append("description", data.description);
   formData.append("image_url", data.image_url);
 
   api
@@ -39,31 +41,35 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <h2>Изменить книгу</h2>
+  <section class="d-flex flex-column align-items-center">
+    <h2>Изменить книгу</h2>
 
-  <form
-    @submit.prevent="handleSubmit"
-    class="d-sm-flex flex-column align-items-start gap-2"
-  >
-    <input type="text" placeholder="Название" v-model="data.title" required/>
-    <input type="text" placeholder="Автор" v-model="data.author" required/>
-    <input type="text" placeholder="Издательство" v-model="data.publisher" required/>
+    <form
+      @submit.prevent="handleSubmit"
+      class="d-sm-flex flex-column align-items-start gap-2"
+    >
+      <input type="text" placeholder="Название" v-model="data.title" required/>
+      <input type="text" placeholder="Автор" v-model="data.author" required/>
+      <input type="text" placeholder="Издательство" v-model="data.publisher" required/>
 
-    <select name="" id="" v-model="data.category">
-      <option value="category_1">Категория 1</option>
-      <option value="category_2">Категория 2</option>
-    </select>
+      <input type="text" v-model="data.category" placeholder="Жанр">
 
-    <input
-      type="file"
-      placeholder="Изображение"
-      @change="handleFileChange"
-      required
-    />
+      <textarea name="" id="" v-model="data.description" cols="30" rows="10"></textarea>
 
-    <input type="submit" value="Сохранить" />
-  </form>
+      <input
+        type="file"
+        placeholder="Изображение"
+        @change="handleFileChange"
+        required
+      />
+
+      <input type="submit" value="Сохранить" />
+    </form>
+  </section>
 </template>
 
 <style scoped>
+input, textarea {
+  width: 100%;
+}
 </style>

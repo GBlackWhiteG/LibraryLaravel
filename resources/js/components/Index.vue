@@ -35,7 +35,7 @@ const logout = () => {
 <template>
   <div class="container p-5">
     <div class="nav-items__wrapper">
-      <h1 class="logo-name">Library</h1>
+      <router-link :to="{ name: 'book.index' }"><h1 class="logo-name">Library</h1></router-link>
       <div class="d-flex gap-3 nav-items">
         <router-link :to="{ name: 'book.index' }">Книги</router-link>
         <router-link v-if="accessToken && role === 'admin'" :to="{ name: 'user.index' }"

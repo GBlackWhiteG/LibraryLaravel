@@ -27,20 +27,58 @@ const store = () => {
 </script>
 
 <template>
-  <form>
-    <input type="text" v-model="data.name" placeholder="Имя" required/>
-    <input type="email" v-model="data.email" placeholder="Эл. почта" required/>
-    <input type="password" v-model="data.password" placeholder="Пароль" required/>
-    <input
-      type="password"
-      v-model="data.password_confirmation"
-      placeholder="Подтверждение пароля"
-      required
-    />
-    <input type="submit" @click.prevent="store" />
-    <p v-if="error">{{ error }}</p>
-  </form>
+  <section class="mt-2">
+    <form class="d-flex flex-column align-items-center gap-2">
+      <h2>Регистрация</h2>
+      <div class="form-item">
+        <label for="name">Имя</label>
+        <input
+          id="name"
+          type="text"
+          v-model="data.name"
+          required
+        />
+      </div>
+      <div class="form-item">
+        <label for="email">Эл. почта</label>
+        <input
+          id="email"
+          type="email"
+          v-model="data.email"
+          required
+        />
+      </div>
+      <div class="form-item">
+        <label for="password">Пароль</label>
+        <input
+          id="password"
+          type="password"
+          v-model="data.password"
+          required
+        />
+      </div>
+      <div class="form-item">
+        <label for="password_confirmation">Подтверждение пароля</label>
+        <input
+          id="password_confirmation"
+          type="password"
+          v-model="data.password_confirmation"
+          required
+        />
+      </div>
+      <input type="submit" @click.prevent="store" class="button" />
+      <p v-if="error">{{ error }}</p>
+    </form>
+  </section>
 </template>
 
 <style scoped>
+.form-item {
+  display: flex;
+  flex-direction: column;
+}
+.button {
+  background-color: transparent;
+  border: solid 1px #000000;
+}
 </style>
